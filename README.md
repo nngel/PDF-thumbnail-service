@@ -2,12 +2,12 @@
 
 [![Python](https://img.shields.io/badge/python-3.9%2B-blue?logo=python)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Docs](https://img.shields.io/badge/docs-Swagger-blue?logo=swagger)](https://lor-service-pdfhumbnail.vercel.app/docs)
+[![Docs](https://img.shields.io/badge/docs-Swagger-blue?logo=swagger)](https://lor-service-pdfthumbnail.vercel.app/docs)
 [![Vercel](https://img.shields.io/badge/deployed%20on-Vercel-black?logo=vercel)](https://lor-service-pdfhumbnail.vercel.app)
 
 A production-ready FastAPI microservice that functions as a PDF thumbnail generator, converting the first page of PDF files to optimized PNG thumbnails.
 
-🌐 **Live API**: [https://lor-service-pdfhumbnail.vercel.app](https://lor-service-pdfhumbnail.vercel.app) | **API Docs**: [/docs](https://lor-service-pdfhumbnail.vercel.app/docs)
+🌐 **Live API**: [https://lor-service-pdfhumbnail.vercel.app](https://lor-service-pdfhumbnail.vercel.app) | **API Docs**: [/docs](https://lor-service-pdfthumbnail.vercel.app/docs)
 
 ## Features
 - **PDF to Image Conversion**: Converts the first page of any PDF to PNG format
@@ -59,12 +59,12 @@ GET /docs
 Swagger/OpenAPI documentation for the API
 
 ## Testing the API
-- **Swagger UI**: [https://lor-service-pdfhumbnail.vercel.app/docs](https://lor-service-pdfhumbnail.vercel.app/docs)
+- **Swagger UI**: [https://lor-service-pdfthumbnail.vercel.app/docs](https://lor-service-pdfthumbnail.vercel.app/docs)
 - **Example cURL:**
   ```bash
   curl -X POST \
     -F "file=@document.pdf" \
-    'https://lor-service-pdfhumbnail.vercel.app/pdf?optimize=true' \
+    'https://lor-service-pdfthumbnail.vercel.app/pdf?optimize=true' \
     --output thumbnail.png
   ```
 
