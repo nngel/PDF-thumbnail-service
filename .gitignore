@@ -17,6 +17,7 @@ env/
 
 # Test output
 *.png
+!api/ryo.png
 *.pdf
 
 # Jupyter Notebook checkpoints

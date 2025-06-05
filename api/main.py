@@ -1,10 +1,11 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException, Form
-from fastapi.responses import Response, HTMLResponse
+from fastapi.responses import Response, HTMLResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 import fitz  # PyMuPDF
 from PIL import Image
 import io
 import logging
+import os
 from typing import Optional
 
 # Configure logging
@@ -48,6 +49,7 @@ async def root():
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>PDF Thumbnail Service</title>
+        <link rel="icon" type="image/png" href="/favicon">
         <style>
             body {
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -285,6 +287,15 @@ async def service_info():
         ],
         "tech_stack": ["FastAPI", "PyMuPDF", "Pillow", "Vercel"]
     }
+
+@app.get("/favicon")
+async def favicon():
+    """Serve favicon"""
+    favicon_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "api/ryo.png")
+    if os.path.exists(favicon_path):
+        return FileResponse(favicon_path, media_type="image/png")
+    else:
+        raise HTTPException(status_code=404, detail="Favicon not found")
 
 # Vercel specific configuration
 app = app
