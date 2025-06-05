@@ -1,5 +1,5 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException, Form
-from fastapi.responses import Response
+from fastapi.responses import Response, HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 import fitz  # PyMuPDF
 from PIL import Image
@@ -39,9 +39,131 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
+@app.get("/", response_class=HTMLResponse)
 async def root():
-    return {"message": "PDF Thumbnail Service", "version": "1.0.0"}
+    html_content = """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>PDF Thumbnail Service</title>
+        <style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 40px 20px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+                color: #333;
+            }
+            .container {
+                background: white;
+                border-radius: 12px;
+                padding: 40px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            }
+            h1 {
+                color: #4a5568;
+                margin-bottom: 10px;
+                font-size: 2.5em;
+            }
+            .subtitle {
+                color: #718096;
+                margin-bottom: 30px;
+                font-size: 1.2em;
+            }
+            .feature {
+                background: #f7fafc;
+                padding: 20px;
+                border-radius: 8px;
+                margin: 20px 0;
+                border-left: 4px solid #667eea;
+            }
+            .endpoints {
+                background: #1a202c;
+                color: #e2e8f0;
+                padding: 20px;
+                border-radius: 8px;
+                margin: 20px 0;
+            }
+            .endpoint {
+                margin: 10px 0;
+                font-family: 'Courier New', monospace;
+            }
+            .method {
+                background: #48bb78;
+                color: white;
+                padding: 2px 8px;
+                border-radius: 4px;
+                font-size: 0.8em;
+                margin-right: 10px;
+            }
+            .method.post {
+                background: #ed8936;
+            }
+            a {
+                color: #667eea;
+                text-decoration: none;
+            }
+            a:hover {
+                text-decoration: underline;
+            }
+            .btn {
+                background: #667eea;
+                color: white;
+                padding: 12px 24px;
+                border-radius: 6px;
+                text-decoration: none;
+                display: inline-block;
+                margin: 10px 10px 10px 0;
+                transition: background 0.3s;
+            }
+            .btn:hover {
+                background: #5a67d8;
+                text-decoration: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>PDF Thumbnail Service</h1>
+            <p class="subtitle">Convert PDF first page to optimized PNG thumbnails</p>
+            
+            <div class="feature">
+                <h3>Features</h3>
+                <ul>
+                    <li><strong>High Quality:</strong> 150 DPI rendering for crisp thumbnails</li>
+                    <li><strong>Smart Optimization:</strong> Optional scaling and compression</li>
+                    <li><strong>Secure:</strong> In-memory processing, no file storage</li>
+                    <li><strong>Fast:</strong> Serverless deployment on Vercel</li>
+                </ul>
+            </div>
+            <div class="endpoints">
+                <h3>API Endpoints</h3>
+                <div class="endpoint"><span class="method post">POST</span>/pdf - Convert PDF to PNG</div>
+                <div class="endpoint"><span class="method">GET</span>/health - Health check</div>
+                <div class="endpoint"><span class="method">GET</span>/info - Service info</div>
+                <div class="endpoint"><span class="method">GET</span>/docs - API documentation</div>
+            </div>
+
+            <div style="margin-top: 30px;">
+                <a href="/docs" class="btn">API Documentation</a>
+                <a href="https://github.com/nngel/PDF-thumbnail-service" class="btn">GitHub</a>
+            </div>
+
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0; color: #718096; font-size: 0.9em;">
+                <p><strong>Quick Test:</strong></p>
+                <code style="background: #f7fafc; padding: 10px; display: block; border-radius: 4px; margin: 10px 0;">
+                curl -X POST -F "file=@document.pdf" {request.url}pdf?optimize=true --output thumbnail.png
+                </code>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+    return html_content
 
 @app.post("/pdf")
 async def convert_pdf_to_image(file: UploadFile = File(...), optimize: Optional[bool] = False):
@@ -138,7 +260,31 @@ async def convert_pdf_to_image(file: UploadFile = File(...), optimize: Optional[
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
-    return {"status": "healthy", "service": "pdf-thumbnail"}
+    return {"status": "healthy", "service": "pdf-thumbnail", "deployment": "vercel"}
+
+@app.get("/info")
+async def service_info():
+    """Service information and capabilities"""
+    return {
+        "service": "PDF Thumbnail Service",
+        "version": "1.0.0",
+        "description": "Convert first page of PDF files to optimized PNG thumbnails",
+        "endpoints": {
+            "POST /pdf": "Convert PDF to PNG (supports ?optimize=true parameter)",
+            "GET /": "Service homepage",
+            "GET /health": "Health check",
+            "GET /info": "Service information",
+            "GET /docs": "API documentation"
+        },
+        "features": [
+            "High quality 150 DPI rendering",
+            "Optional optimization and scaling",
+            "In-memory processing (no file storage)",
+            "CORS enabled",
+            "10MB file size limit"
+        ],
+        "tech_stack": ["FastAPI", "PyMuPDF", "Pillow", "Vercel"]
+    }
 
 # Vercel specific configuration
 app = app
